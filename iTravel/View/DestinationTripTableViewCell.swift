@@ -38,8 +38,6 @@ class DestinationTripTableViewCell: UITableViewCell {
         BDD().dowloadTrip(IdUser: trip.user.id) { trip in
             self.trip = trip
             
-            // J'ai Rajouté ici pour update le nombre de likes
-            self.numberLike.text = String(self.trip.likes.count)
         }
     }
     

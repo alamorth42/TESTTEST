@@ -24,6 +24,24 @@ class BDD {
         }
     }
     
+    func checkUserOrLikes(id: String, completion: UserCompletion?) {
+        
+        Reference().tripsUser(id: id).observe(.value) { snapshot in
+            Reference().userDatabase(id: snapshot.key).observe(.value) { (datasnapshot)  in
+                
+                if datasnapshot.exists(), let _ = datasnapshot.value as? [String: AnyObject] {
+                    
+                    completion?(User(snapchot: datasnapshot))
+                } else {
+                    completion?(nil)
+                }
+            }
+        }
+        
+        
+    }
+    
+    
     func downloadFullUsers(completion: UserCompletion?) {
         Reference().rootUsers.observe(.childAdded) { (snapshot) in
             completion?(User(snapchot: snapshot))
@@ -52,13 +70,43 @@ class BDD {
     }
     
     func dowloadTrip(IdUser: String, complettion: TripCompletion?) {
-        checkUser(id: IdUser) { (user) in
+        checkUserOrLikes(id: IdUser) { (user) in
             if user != nil {
                 Reference().tripsUser(id: IdUser).observe(.childAdded) { (snapshot) in
+                    
                     let tripId = snapshot.key
                     if let dictionary = snapshot.value as? [String: AnyObject] {
                         let newTrip = Trip(ref: snapshot.ref, id: tripId, user: user!, remark: [], dictionary: dictionary)
                         complettion?(newTrip)
+                    } else {
+                        complettion?(nil)
+                    }
+                }
+            }
+        }
+    }
+    
+    func dowloadTripSearch(IdUser: String, destination: String, complettion: TripCompletion?) {
+        checkUserOrLikes(id: IdUser) { (user) in
+            if user != nil {
+                Reference().tripsUser(id: IdUser).observe(.childAdded) { (snapshot) in
+                    
+                    let tripId = snapshot.key
+                    if let dictionary = snapshot.value as? [String: AnyObject] {
+                        
+                        
+                        let dest = dictionary["destination"] as? String ?? ""
+                        
+                        if (dest != "") {
+                            if (dest.contains(destination)) {
+                                let newTrip = Trip(ref: snapshot.ref, id: tripId, user: user!, remark: [], dictionary: dictionary)
+                                complettion?(newTrip)
+                            } else {
+                                complettion?(nil)
+                            }
+                        } else {
+                            complettion?(nil)
+                        }
                     } else {
                         complettion?(nil)
                     }

@@ -19,9 +19,6 @@ extension UIImageView {
         URLSession.shared.dataTask(with: url as URL, completionHandler: {
             (data, response, error) -> Void in
             
-            print(data)
-            print(response)
-            print(error)
             DispatchQueue.main.async {
                 self.contentMode =  contentMode
                 self.image = UIImage(data: data!)

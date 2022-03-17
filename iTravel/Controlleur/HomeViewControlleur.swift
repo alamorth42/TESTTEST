@@ -10,6 +10,7 @@ import FirebaseAuth
 
 class HomeViewControlleur: UIViewController {
     
+    @IBOutlet weak var searchTextField: MainTextField!
     @IBOutlet weak var tableView: UITableView!
     
     private var trips = [Trip]()
@@ -33,9 +34,39 @@ class HomeViewControlleur: UIViewController {
         
     }
     
+    @IBAction func searchDestinationTextField(_ sender: Any) {
+        
+        if (searchTextField.text != nil) {
+            downloadSearchTrip(destination: searchTextField.text!)
+        }
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let destination = segue.destination as? RemarkViewControlleur else { return }
         destination.trip = trip
+    }
+    
+    func downloadSearchTrip(destination: String) {
+        var users = [User]()
+        
+        trips.removeAll()
+        BDD().downloadFullUsers { (user) in
+            if let user = user {
+                if let index = users.firstIndex(where: {$0.id == user.id}) {
+                    users[index] = user
+                } else {
+                    users.append(user)
+                }
+                for user in users {
+                    BDD().dowloadTripSearch(IdUser: user.id, destination: destination) { (trip) -> (Void) in
+                        if trip != nil {
+                            self.checkTripPresent(trip: trip!)
+                        }
+                    }
+                }
+                self.tableView.reloadData()
+            }
+        }
     }
     
     func dowloadFullTrips() {

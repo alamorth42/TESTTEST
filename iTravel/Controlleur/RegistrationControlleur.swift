@@ -61,7 +61,7 @@ class RegistrationController: UIViewController, UIImagePickerControllerDelegate,
     private func userCreate() {
         guard let email = emailTextFild.text else { return }
         guard let password = passwordTextFild.text else { return }
-        guard let username = userNameTextFild.text else { return }
+        guard userNameTextFild.text != nil else { return }
         
         // Vérification que les textFields ne sont pas vides. Si un/les textField(s) sont vide(s), une alerte apparait à l'utilisateur.
         // Verification that the textFields are not empty. If one or more textField(s) are empty(s), an alert appears to the user.

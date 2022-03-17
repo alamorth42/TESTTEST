@@ -23,7 +23,8 @@ class MyTripTableViewCell: UITableViewCell {
     static let identifier = "MyTripViewCell"
     var trip: Trip!
     
-    @IBAction func likeActionButton(_ sender: Any) {
+
+    @IBAction func likeActionButtonMyTrip(_ sender: UIButton) {
         var myLikes = self.trip.likes
         if likeButton.imageView!.image == UIImage(named: "like.png") {
             likeButton.setImage(UIImage(named: "liker.png"), for: .normal)
@@ -38,10 +39,8 @@ class MyTripTableViewCell: UITableViewCell {
         BDD().updateTrip(tripId: self.trip.id, userId: self.trip.user.id, dictionary: ["likes": myLikes as AnyObject])
     }
     
-    
     func configure(trip: Trip) {
         
-        print("CONFIGURE")
         self.trip = trip
         usernameLabel.text = trip.user.username
         destinationLabel.text = trip.destination

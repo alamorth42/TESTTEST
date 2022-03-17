@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import Firebase
+
 @testable import iTravel
 
 class iTravelTests: XCTestCase {
